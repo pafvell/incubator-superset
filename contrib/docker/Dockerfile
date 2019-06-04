@@ -22,6 +22,8 @@ RUN useradd --user-group --create-home --no-log-init --shell /bin/bash superset
 ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8
 
+RUN sed -i 's/http:\/\/archive\.ubuntu\.com\/ubuntu\//http:\/\/mirrors\.163\.com\/ubuntu\//g' /etc/apt/sources.list
+
 RUN apt-get update -y
 
 # Install dependencies to fix `curl https support error` and `elaying package configuration warning`
@@ -53,7 +55,8 @@ RUN pip install --upgrade setuptools pip \
 COPY --chown=superset:superset superset superset
 
 ENV PATH=/home/superset/superset/bin:$PATH \
-    PYTHONPATH=/home/superset/superset/:$PYTHONPATH
+    PYTHONPATH=/home/superset/superset/:$PYTHONPATH \
+    SUPERSET_LOAD_EXAMPLES=yes
 
 USER superset
 
