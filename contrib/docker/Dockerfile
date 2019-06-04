@@ -47,7 +47,7 @@ COPY requirements.txt .
 COPY requirements-dev.txt .
 
 RUN pip install --upgrade setuptools pip \
-    && pip install -r requirements.txt -r requirements-dev.txt \
+    && pip install -r requirements.txt -r requirements-dev.txt  -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com --extra-index-url http://mirrors.aliyun.com/pypi/simple/ \
     && rm -rf /root/.cache/pip
 
 COPY --chown=superset:superset superset superset
@@ -57,6 +57,7 @@ ENV PATH=/home/superset/superset/bin:$PATH \
 
 USER superset
 
+RUN npm config set registry http://r.cnpmjs.org/
 RUN cd superset/assets \
     && npm ci \
     && npm run build \

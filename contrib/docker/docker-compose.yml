@@ -21,32 +21,68 @@ services:
     restart: unless-stopped
     ports:
       - 6379:6379
+    networks:
+      superset:
+        ipv4_address: 172.19.0.3
     volumes:
       - redis:/data
 
-  postgres:
-    image: postgres:10
+  mysql:
+    build:
+      context: ../../
+      dockerfile: contrib/docker/mysql/dockerfile
     restart: unless-stopped
-    environment:
-      POSTGRES_DB: superset
-      POSTGRES_PASSWORD: superset
-      POSTGRES_USER: superset
+    container_name: superset_mysql
+    #working_dir: /mysql
+    #working_dir: /data/mysql/work_dir
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 123456
+      #MYSQL_DATABASE: superset
+      #MYSQL_USER: superset
+      #MYSQL_PASSWORD: superset
     ports:
-      - 5432:5432
+      - 3306:3306
+    #network_mode: host
+    networks:
+      superset:
+        ipv4_address: 172.19.0.2
     volumes:
-      - postgres:/var/lib/postgresql/data
+      #- /data/mysql:/mysql
+      - ./mysql/privileges.sql:/mysql/privileges.sql
+      - ./mysql/setup.sh:/mysql/setup.sh
+
+
+#  postgres:
+#    image: postgres:10
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: superset
+#      POSTGRES_PASSWORD: superset
+#      POSTGRES_USER: superset
+#    ports:
+#      - 5432:5432
+#    volumes:
+#      - postgres:/var/lib/postgresql/data
 
   superset:
     build:
       context: ../../
       dockerfile: contrib/docker/Dockerfile
     restart: unless-stopped
+    networks:
+      superset:
+        ipv4_address: 172.19.0.4
     environment:
-      POSTGRES_DB: superset
-      POSTGRES_USER: superset
-      POSTGRES_PASSWORD: superset
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
+#      POSTGRES_DB: superset
+#      POSTGRES_USER: superset
+#      POSTGRES_PASSWORD: superset
+#      POSTGRES_HOST: postgres
+#      POSTGRES_PORT: 5432
+      MYSQL_DB: superset
+      MYSQL_USER: superset
+      MYSQL_PASSWORD: superset
+      MYSQL_HOST: 172.19.0.2
+      MYSQL_PORT: 3306
       REDIS_HOST: redis
       REDIS_PORT: 6379
       # If using production, comment development volume below
@@ -54,8 +90,10 @@ services:
       SUPERSET_ENV: development
     ports:
       - 8088:8088
+    #network_mode: host
     depends_on:
-      - postgres
+      #- postgres
+      - mysql
       - redis
     volumes:
       # this is needed to communicate with the postgres and redis services
@@ -64,7 +102,19 @@ services:
       - ../../superset:/home/superset/superset
 
 volumes:
-  postgres:
-    external: false
+#  postgres:
+#    external: false
+  mysql:
+    external: true
   redis:
     external: false
+
+networks:
+   superset:
+#      external:
+#         name: superset
+      ipam:
+        driver: default
+        config:
+          - subnet: 172.19.0.0/16
+            gateway: 172.19.0.1

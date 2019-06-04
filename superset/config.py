@@ -76,7 +76,9 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 SECRET_KEY = '\2\1thisismyscretkey\1\2\e\y\y\h'  # noqa
 
 # The SQLAlchemy connection string.
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DATA_DIR, 'superset.db')
+#SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://zyler:Asdf.123@192.168.89.186:3306/superset?charset=utf8mb4'
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://superset:superset@172.19.0.2:3306/superset?charset=utf8mb4'
+    #'sqlite:///' + os.path.join(DATA_DIR, 'superset.db')
 # SQLALCHEMY_DATABASE_URI = 'mysql://myapp@localhost/myapp'
 # SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/myapp'
 
@@ -219,7 +221,6 @@ DEFAULT_FEATURE_FLAGS = {
 #     feature_flags_dict['some_feature'] = g.user and g.user.id == 5
 #     return feature_flags_dict
 GET_FEATURE_FLAGS_FUNC = None
-
 
 # ---------------------------------------------------
 # Image and file configuration
@@ -364,6 +365,7 @@ SQLLAB_SAVE_WARNING_MESSAGE = None
 # one example use case may be "STAGING" to make it clear that this is
 # not the production version of the site.
 WARNING_MSG = None
+
 
 # Default celery config is to use SQLA as a broker, in a production setting
 # you'll want to use a proper broker as specified here:
@@ -638,6 +640,7 @@ try:
     else:
         from superset_config import *  # noqa
         import superset_config
+
         print('Loaded your LOCAL configuration at [{}]'.format(
             superset_config.__file__))
 except ImportError:

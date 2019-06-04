@@ -80,6 +80,15 @@ export default class Welcome extends React.PureComponent {
               <Favorites user={this.props.user} />
             </Panel>
           </Tab>
+          <Tab eventKey={4} title={t('444')}>
+            <Panel>
+              <Row>
+                <Col md={8}><h2>{t('test5')}</h2></Col>
+              </Row>
+              <hr />
+              <Favorites user={this.props.user} />
+            </Panel>
+          </Tab>
         </Tabs>
       </div>
     );
