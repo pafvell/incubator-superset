@@ -1,0 +1,68 @@
+190515009
+
+
+0834692
+192.168.89.186
+
+
+superset run -p 8080 --with-threads --reload --debugger
+
+FLASK_ENV=development superset run -p 8080 --with-threads --reload --debugger
+
+pip install pythonModuleName -i http://mirrors.aliyun.com/pypi/simple/
+
+pip install -r requirements-dev.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
+
+pip install -r requirements-dev.txt  -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com --extra-index-url http://mirrors.aliyun.com/pypi/simple/
+
+npm config set registry http://r.cnpmjs.org/
+
+linux中 vi / vim显示行号或取消行号命令
+1. 显示行号
+:set number
+或者
+:set nu
+2. 取消行号显示
+:set nu!
+3. 每次打开都显示行号
+  修改vi ~/.vimrc 文件，添加：set number
+
+
+set -ex
+  -e 脚本中的命令一旦运行失败就终止脚本的执行
+  -x 用于显示出命令与其执行结果（默认shell脚本中只显示执行结果）
+
+docker exec -it -u root 2ff53bf23380 /bin/bash
+
+pip install gevent -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com --extra-index-url http://mirrors.aliyun.com/pypi/simple/
+
+pip install pymysql -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com --extra-index-url http://mirrors.aliyun.com/pypi/simple/
+
+
+docker volume create --name='mysql'
+#SUPERSET_LOAD_EXAMPLES=yes docker-compose run --rm superset ./docker-init.sh #容器内设置环境变量使用 -e
+cd contrib/docker/
+docker-compose run -e SUPERSET_LOAD_EXAMPLES=yes --rm superset ./docker-init.sh
+
+cpd-bp11h010kk85e7su0kpr.petadata.rds.aliyuncs.com 3306
+
+
+Can't open the mysql.plugin table. Please run mysql_upgrade to create it.
+Can't open and lock privilege tables: Table 'mysql.user' doesn't exist
+Failed to initialize ACL/grant/time zones structures or failed to remove temporary table files.
+
+
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' susperset_mysql
+
+显示所有容器IP地址：
+docker inspect --format='{{.Name}} - {{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+
+
+cy.route('POST', '/superset/explore_json/**').as('getJson');
+
+
+useradd -m -s /bin/bash spark
+cd
+ssh-keygen -t rsa
+
+%pZUImkRm1&W

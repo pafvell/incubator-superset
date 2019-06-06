@@ -1,0 +1,71 @@
+mysql -h cpd-bp11h010kk85e7su0kpr.petadata.rds.aliyuncs.com -p 3306 -u tmc_ro
+7EA4HVV6k326VGb2K68CVmjP9nET9BJW
+tmc_log
+tmonitor
+
+Create Table `tmonitor` (
+ `UUID` varchar,
+ `t_time` timestamp,
+ `s_type` varchar,
+ `dataSource` varchar,
+ `zone` varchar,
+ `webrtcId` varchar,
+ `token` varchar,
+ `peerToken` varchar,
+ `streamType` varchar,
+ `p_int_audioKbps` bigint,
+ `p_int_videoKbps` bigint,
+ `p_int_rtt` int,
+ `p_int_audioInputLevel` int,
+ `isPub` boolean,
+ `region` varchar,
+ `p_int_packetsLostRate` int,
+ `ip` varchar,
+ `s_id` varchar,
+ `s_terminal` varchar,
+ `s_version` varchar,
+ `s_value` varchar,
+ `s_detail` varchar,
+ `dt` timestamp,
+ rt_key token_rt_idx(`TOKEN`),
+ clustering key ck_token(`TOKEN`)
+) DISTRIBUTE BY HASH(`token`) PARTITION BY VALUE(`YEARMONTHDAY(t_time)`) LIFECYCLE 90 INDEX_ALL='Y' ENGINE='CSTORE'
+
+
+
+#-c 断点续传 --limit-rate 限速
+wget -c --limit-rate=300k http://mirrors.163.com/ubuntu-releases/9.10/ubuntu-9.10-desktop-amd64.iso
+
+wget -c --limit-rate=5000k http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605133334/2019060513333301119421308003030428595_1_0
+
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605133334/2019060513333301119421308003030428595_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605133345/2019060513334401119500222203016013167_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605133354/2019060513335401119500202203030032939_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605133404/2019060513340401122319901803401346927_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605133414/2019060513341401119421504203332974508_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134434/2019060513443401119421510303253733240_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134444/2019060513444401119424722903048444481_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134454/2019060513445401119421308003030430692_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134504/2019060513450401119500222203016015379_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134514/2019060513451401119500202203030035270_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134524/2019060513452401122319901803401350688_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134534/2019060513453401119421504203332976864_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134544/2019060513454401119421510303253733437_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134554/2019060513455401119424722903048444808_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134604/2019060513460401119421308003030430897_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134614/2019060513461401119500222203016015616_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134624/2019060513462401119500202203030035474_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134634/2019060513463401122319901803401351026_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134644/2019060513464401119421504203332977151_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134654/2019060513465401119421510303253733614_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134704/2019060513470401119424722903048445107_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134714/2019060513471401119421308003030431045_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134724/2019060513472401119500222203016015787_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134734/2019060513473401119500202203030035627_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134744/2019060513474401122319901803401351262_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134754/2019060513475401119421504203332977427_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134804/2019060513480401119421510303253733819_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134814/2019060513481401119424722903048445411_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134824/2019060513482401119421308003030431222_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134834/2019060513483401119500222203016015966_1_0
+http://production-blink.oss-cn-hangzhou.aliyuncs.com/tmonitor/20190605134844/2019060513484401119500202203030035751_1_0
