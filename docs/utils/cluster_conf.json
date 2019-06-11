@@ -1,0 +1,14 @@
+[
+ {
+   "Classification": "mapred-site",
+   "Properties": {
+       "mapred.job.reuse.jvm.num.tasks": "-1"
+   }
+  },
+  {
+          "Classification": "spark",
+              "Properties": {
+                  "maximizeResourceAllocation": "true"
+                }   
+    }   
+]

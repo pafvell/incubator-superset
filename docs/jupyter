@@ -1,0 +1,231 @@
+查看环境
+conda info -e
+conda env list
+#conda create --name python34 python=3.4
+
+http://imecore01-uscasv2.cootekservice.com:6002/?token=971f1ad28e5288814b95b880a817b5ab51cb78bff50c72c0
+http://imecore01-uscasv2.cootekservice.com:6002
+
+jupyter notebook --ip imecore01-uscasv2.cootekservice.com --port 20000
+jupyter notebook --ip 192.168.184.15 --port 20000
+
+
+远程机器开端口（如启动jupyter）
+本地执行建立动态隧道: ssh -i /Users/ygg/downloads/yang.zhou.pem -o ServerAliveInterval=30 -NfD 127.0.0.1:21000 yang.zhou@jumpserver.cootekservice.com -p 54321
+
+
+wk_Ko4md3tnaXWMh
+
+设置浏览器代理：
+
+
+jupyter notebook --ip 192.168.184.15 --port 21000 --no-browser
+
+http://192.168.184.15:21000/?token=6156a34676f4114efe7a3877e51e8cf366bb709ae464ab63&token=6156a34676f4114efe7a3877e51e8cf366bb709ae464ab63
+
+
+
+                        ～～～～～～～～～～～～～～～～～jupyter pyspark   error～～～～～～～～～～～～～～～～～
+                        mkdir -p ~/.ipython/kernels/pyspark/
+                        vi .ipython/kernels/pyspark/kernel.json
+
+                        {
+                        "display_name": "pySpark (Spark 2.1.1)",
+                        "language": "python",
+                        "argv": [
+                        "/home/yang.zhou/anaconda2/bin/python",
+                        "-m",
+                        "ipykernel"
+                        ],
+                        "env": {
+                             "CAPTURE_STANDARD_OUT": "true",
+                             "CAPTURE_STANDARD_ERR": "true",
+                             "SEND_EMPTY_OUTPUT": "false",
+                             "JAVA_HOME": "/usr/lib/jvm/java-8-oracle",
+                             "SPARK_HOME": "/usr/local/spark-2.1.1-bin-hadoop2.6",
+                             "PYSPARK_PYTHON": "/home/yang.zhou/anaconda2/bin/python",
+                             "PYTHONPATH": "${SPARK_HOME}/python/:${SPARK_HOME}/python/lib/py4j-0.10.4-src.zip",
+                             "PYTHONSTARTUP": "/usr/local/spark-2.1.1-bin-hadoop2.6/python/pyspark/shell.py",
+                             "PYSPARK_SUBMIT_ARGS": "--master local[2] pyspark-shell"
+                         }
+                        }
+
+
+!!!!!!!!!!!!!!!!!!!!!!!jupyter pyspark ok!!!!!!!!!!!!!!!!!!!!!!!!
+
+import findspark
+findspark.init('/usr/local/spark-2.1.1-bin-hadoop2.6')
+from pyspark import SparkContext, SparkFiles, SparkConf
+from pyspark.sql import functions as func
+from pyspark.sql import SparkSession, Window
+from pyspark.sql.functions import explode, col, udf, concat_ws, row_number, size, array, collect_set, lit, when
+from pyspark.sql.types import StringType, IntegerType, MapType, ArrayType, StructType, StructField
+import matplotlib
+import matplotlib.pyplot as plt
+import redis
+import collections
+import json
+import sys
+stdi, stdo, stde = sys.stdin, sys.stdout, sys.stderr
+reload(sys)
+sys.setdefaultencoding('utf-8')
+sys.stdin, sys.stdout, sys.stderr = stdi, stdo, stde
+
+conf = SparkConf()
+conf.setAppName("adjust ad_user time zone")
+conf.setMaster("yarn")
+conf.set('spark.yarn.queue', 'root.gb')
+conf.set('spark.executor.memory', '6g')
+# conf.set('spark.executor.cores', '1')
+conf.set('spark.executor.instances', '10')
+conf.set('spark.driver.memory', '2g')
+sc = SparkContext(appName="findspark", conf=conf)
+sc.setLogLevel('ERROR')
+spark = SparkSession(sc).builder.getOrCreate()
+
+sc = SparkContext(appName="findspark")
+sc.setLogLevel('ERROR')
+spark = SparkSession(sc).builder.getOrCreate()
+
+
+app_name='com.screen.dimmer.nightfilter.nightmode'
+def dot_one(x_list, y_list):
+    plt.scatter(x_list, y_list, marker='x', color='red', s=5, label='one')
+    plt.legend(loc='best')
+    plt.show()
+
+def arr_distinct(arr):
+    res = []
+    for x in arr:
+        if x not in res:
+            res.append(x)
+    return res
+
+
+redis查询
+SERVERS = [
+    {'host': 'redis01.uscasv2.cootek.com', 'port': '17381'},
+    # {'host': 'ap-codis01.southeast.cootek.com', 'port': '17381'},
+    # {'host': 'eu-codis01.eucentral.cootek.com', 'port': '17381'},
+]
+def get_redis_ids():
+    ret = []
+    for server in SERVERS:
+        r = redis.Redis(host=server['host'], port=server['port'])
+        # keys = r.hkeys(TABLE)
+        # for key in keys:
+        #     ret.append({'android_id': key, "is_cheat": str(r.hget('ANTI_CHEAT', key))})
+        cheat_dict = r.hgetall(TABLE)
+        for k, v in cheat_dict.items():
+            ret.append({'android_id': k, "is_cheat": v})
+    return ret
+
+r = redis.Redis(host='redis01.uscasv2.cootek.com', port=17381)
+print(r.hget('ANTI_CHEAT', '112ce8b982c9618b'))
+lst=[]
+for x in lst:
+    print('%s : %s' % (x , r.hget('ANTI_CHEAT', x)))
+
+
+
+
+datavisor
+dt='201807'
+act = spark.read.option("mergeSchema", "true").parquet('/data/dw/activate_source/gb/%s/parquet/all/%s*' % (app_name, dt)).select(['android_id', 'media_source']).distinct()
+afs = spark.read.csv('/user/gbdata/raw/appsflyer/raw/%s*/%s*_%s.csv' % (dt, dt, app_name), header=True).select(['`Android ID`', '`AppsFlyer ID`']).distinct()
+
+d2_dict = dict()
+for media in ['inmobi_int', 'mobvista_int']:
+    dv = spark.read.csv('file:///home/yang.zhou/datavisor/%s/report.%s.%s@%s.csv' % (dt, dt, app_name, media), header=True).select('user_id').distinct()
+    d2_dict[media] = [x['android_id'] for x in dv.join(afs, dv['user_id'] == afs['`AppsFlyer ID`']).select(col('`Android ID`').alias('android_id')).distinct().collect()]
+
+datavisor = []
+for k, v in d2_dict.items():
+    print(k)
+    print(len(v))
+    datavisor.extend(v)
+
+appsflyer = [x['android_id'] for x in afs.select(col('`Android ID`').alias('android_id')).distinct().collect()]
+
+activate = [x['android_id'] for x in act.select(col('android_id')).distinct().collect()]
+
+anti_cheat = [x['android_id'] for x in spark.read.option("mergeSchema", "true").parquet('hdfs:///user/yang.zhou/anti_cheat/%s/%s*/raw/parquet/' % (app_name, dt)).select('android_id').distinct().collect()]
+
+r = redis.Redis(host='redis01.uscasv2.cootek.com', port=17381)
+is_cheat = r.hkeys('ANTI_CHEAT')
+
+n = [0, set(datavisor), set(appsflyer), set(activate), set(anti_cheat), set(is_cheat)]
+
+import rpy2.robjects as ro
+ro.r('library(VennDiagram);')
+ro.r('venn.plot <- draw.quintuple.venn(area1 = %s,area2 = %s,area3 = %s,area4 = %s,area5 = %s,n12 = %s,n13 = %s,n14 = %s,n15 = %s,n23 = %s,n24 = %s,n25 = %s,n34 = %s,n35 = %s,n45 = %s,n123 = %s,n124 = %s,n125 = %s,n134 = %s,n135 = %s,n145 = %s,n234 = %s,n235 = %s,n245 = %s,n345 = %s,n1234 = %s,n1235 = %s,n1245 = %s,n1345 = %s,n2345 = %s,n12345 = %s,category = c("datavisor", "appsflyer", "activate", "anti_cheat", "is_cheat"),fill = c("orange", "red", "green", "blue", "yellow"),cex = c(1.5, 1.5, 1.5, 1.5, 1.5, 1, 0.8, 1, 0.8, 1, 0.8, 1, 0.8, 1, 0.8, 1, 0.55, 1, 0.55, 1, 0.55, 1, 0.55, 1, 0.55, 1, 1, 1, 1, 1, 1.5),cat.cex = 2,cat.col = c("orange", "red", "green", "blue", "yellow"),ind = TRUE);' % (len(n[1]), len(n[2]), len(n[3]), len(n[4]), len(n[5]), len(n[1] & n[2]), len(n[1] & n[3]), len(n[1] & n[4]), len(n[1] & n[5]), len(n[2] & n[3]), len(n[2] & n[4]), len(n[2] & n[5]), len(n[3] & n[4]), len(n[3] & n[5]), len(n[4] & n[5]), len(n[1] & n[2] & n[3]), len(n[1] & n[2] & n[4]), len(n[1] & n[2] & n[5]), len(n[1] & n[3] & n[4]), len(n[1] & n[3] & n[5]), len(n[1] & n[4] & n[5]), len(n[2] & n[3] & n[4]), len(n[2] & n[3] & n[5]), len(n[2] & n[4] & n[5]), len(n[3] & n[4] & n[5]), len(n[1] & n[2] & n[3] & n[4]), len(n[1] & n[2] & n[3] & n[5]), len(n[1] & n[2] & n[4] & n[5]), len(n[1] & n[3] & n[4] & n[5]), len(n[2] & n[3] & n[4] & n[5]), len(n[1] & n[2] & n[3] & n[4] & n[5])))
+ro.r('tiff(filename = "/home/yang.zhou/tiff/five.tiff", compression = "lzw");')
+ro.r('grid.draw(venn.plot);')
+ro.r('dev.off();')
+
+
+
+date = '20180825'
+spark.read.option("mergeSchema", "true").parquet('hdfs:///user/gbdata/dw/ad_sspstat/click/parquet/%s' % date).filter('app_name="com.screen.dimmer.nightfilter.nightmode" and placementid = "ca-app-pub-3872883702131211/5414074095"').createOrReplaceTempView('c')
+spark.read.option("mergeSchema", "true").parquet('hdfs:///data/dw/activate_source/gb/com.screen.dimmer.nightfilter.nightmode/parquet/all/*').createOrReplaceTempView('act')
+act_click = spark.sql('select c.android_id, x.media_source, x.source_type, x.act_time from c join (select distinct android_id, media_source, source_type, act_time from act) x on c.android_id = x.android_id')
+act_click.show(54)
+print(act_click.count())
+
+
+date = '20180825'
+af = spark.read.option("mergeSchema", "true").parquet('hdfs:///user/yang.zhou/anti_cheat/%s/%s/raw/parquet/' % (app_name, date))
+touch_sum_df = af.groupby(['android_id']).agg(func.sum('raw_touch_cnt').alias('day_touch_sum'))
+odf = af.join(touch_sum_df, af["android_id"] == touch_sum_df["android_id"], 'inner').drop(touch_sum_df.android_id)
+dim = ['android_id', 'request.data.sx', 'request.data.sy']
+cols = [col('xy_lst_lst'), col('android_id'), col('sx'), col('sy')]
+etl1 = odf.filter('day_touch_sum >= %s and day_touch_sum <= %s' % ('20', '10000')).withColumn('d1', explode('request.data.d'))
+etl2 = etl1.withColumn('me', explode('d1.mes'))
+target_df = etl2.withColumn('xy', array(col('me.m_x'), col('me.m_y'))).groupby(dim).agg(collect_set('xy').alias('xy_lst_lst')).select(cols)
+target_df.createOrReplaceTempView('tf')
+spark.read.option("mergeSchema", "true").parquet('hdfs:///user/gbdata/dw/ad_sspstat/click/parquet/%s' % date).filter('app_name="com.screen.dimmer.nightfilter.nightmode" and placementid = "ca-app-pub-3872883702131211/5414074095"').createOrReplaceTempView('c')
+row_df = spark.sql('select * from tf where tf.android_id in (select distinct android_id from c)')
+#row_df.show()
+rows = row_df.collect()
+#rows = target_df.filter('android_id = "b30e66eb4aa129e3"').collect()
+#for row in rows[0:1]:
+for row in rows:
+    xy_list, android_id, sx, sy = row['xy_lst_lst'], row['android_id'], row['sx'], row['sy']
+    # print(xy_list)
+    xy_set = arr_distinct(xy_list)
+    x_list = [x[0] for x in xy_set]
+    y_list = [x[1] for x in xy_set]
+    #plt.figure(figsize=(int(sx) * 0.005, int(sy) * 0.005))
+    #plt.plot(x_list, y_list, '.')
+    #plt.axis([0, int(sx), 0, int(sy)])
+    plt.title('%s %s %s' % (android_id, sx, sy))
+    print(android_id)
+    #plt.show(android_id)
+    dot_one(x_list, y_list)
+
+
+
+window = Window.partitionBy(col('identifier'), col('app_name')).orderBy(col('act_time').desc())
+act = spark.read.option("mergeSchema", "true").parquet('/data/dw/activate_source/gb/%s/parquet/all/*' % app_name).withColumn('rn', row_number().over(window)).where(col('rn') == 1).drop('rn').cache()
+
+act.select('media_source').distinct().show()
+
+act.select('android_id',(func.unix_timestamp('act_time', 'yyyyMMddHHmmss')*1000).alias('uxt')).show()
+
+
+不等激活直接用appsflyer文件的方式
+date='20180829'
+distinct_window = Window.partitionBy(col('request.data.d')).orderBy(col('time').desc())
+df = spark.read.json('/data/gaia/online/usage/2018/%s/%s_gb_data_anti_cheat/*/' % (date, date)).filter('request.token_info.activation_info.app_name = "%s"' % app_name).distinct().withColumn('rn', row_number().over(distinct_window)).where(col('rn') == 1).drop('rn').withColumn('raw_touch_cnt', size('request.data.d'))
+
+afs = spark.read.csv('/user/gbdata/raw/appsflyer/raw/%s/%s_com.screen.dimmer.nightfilter.nightmode.csv' % (date, date), header=True)
+
+anti_ids_df = df.select(col('request.token_info.activation_info.android_id').alias('android_id')).distinct()
+media_df = anti_ids_df.join(afs, anti_ids_df['android_id'] == afs['Android ID']).select(['android_id','`Media Source` as media_source'])
+media_df.groupby('`Media Source`').agg(func.count('*').alias('cnt')).show()
+
+for d in ['20180725']:
+    cnt = spark.read.option("mergeSchema", "true").parquet('/data/dw/launch_active/gb/smartinput/parquet/*/%s/' % d).where(col('date') != '%s' % d).count()
+    if cnt > 0
+        print(d)
+    print('ok')

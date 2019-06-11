@@ -1,0 +1,28 @@
+{
+    "name" : "{{name}}",
+    "key" : "key",
+    "value" : "value",
+    "time" : "{{time}}",
+    "servers" : [
+        {
+            "region": "us",
+            "host" : "redis02.uscasv2.cootek.com",
+            "port" : 17099
+        },
+        {
+            "region": "eu",
+            "host" : "eu-redis02.eucentral.cootek.com",
+            "port" : 10001
+        },
+        {
+            "region": "ap",
+            "host" : "ap-redis02.southeast.cootek.com",
+            "port" : 10001
+        },
+        {
+            "region": "cn",
+            "host" : "gaia15.corp.cootek.com",
+            "port" : 10001
+        }
+    ]
+}
