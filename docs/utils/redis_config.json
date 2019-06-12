@@ -6,22 +6,22 @@
     "servers" : [
         {
             "region": "us",
-            "host" : "redis02.uscasv2.cootek.com",
+            "host" : "",
             "port" : 17099
         },
         {
             "region": "eu",
-            "host" : "eu-redis02.eucentral.cootek.com",
+            "host" : "",
             "port" : 10001
         },
         {
             "region": "ap",
-            "host" : "ap-redis02.southeast.cootek.com",
+            "host" : "",
             "port" : 10001
         },
         {
             "region": "cn",
-            "host" : "gaia15.corp.cootek.com",
+            "host" : "",
             "port" : 10001
         }
     ]

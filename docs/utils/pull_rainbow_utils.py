@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
 
-rainbow_base_url = 'https://bigdata-view.cootekservice.com:50040/r/'
+rainbow_base_url = 'https://:50040/r/'
 
 
 def log_in_rainbow(rainbow_session, user, pwd):
@@ -17,7 +17,7 @@ def log_in_rainbow(rainbow_session, user, pwd):
         'Password': pwd,
         'AuthMethod': 'FormsAuthentication'
     }
-    soup = BeautifulSoup(rainbow_session.get('https://bigdata-view.cootekservice.com:50040/').content, 'lxml')
+    soup = BeautifulSoup(rainbow_session.get('https://:50040/').content, 'lxml')
     redir = soup.select_one("#loginForm")["action"]
     url = 'https://sso.corp.cootek.com/'
     rainbow_session.post(urljoin(url, redir), data=data, headers=head)
