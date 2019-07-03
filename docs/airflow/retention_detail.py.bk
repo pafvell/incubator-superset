@@ -1,0 +1,54 @@
+from builtins import range
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python_operator import PythonOperator, BranchPythonOperator
+from airflow.operators.sensors import S3KeySensor, TimeDeltaSensor, ExternalTaskSensor, SqlSensor
+from airflow.models import DAG
+from datetime import datetime, timedelta
+import os
+
+import airflow_utils
+import data_config
+import local_config
+
+args = {
+    'owner': 'kevin.yang',
+    'start_date': datetime(2017, 1, 1),
+    'retries':1,
+    'email': ['kevin.yang@cootek.cn', 'lin.zou@cootek.cn']
+}
+
+dag = DAG(
+    dag_id='retention_detail', 
+    default_args=args,
+    schedule_interval = timedelta(days=1),
+    dagrun_timeout=timedelta(hours=23))
+
+retention_detail_template = '''
+    cd %s/daily_retention && python ./daily_retention.py -b {{ds_nodash}} -e {{ds_nodash}} -m update
+'''%local_config.WORKSPACE
+retention_detail = BashOperator(
+    dag=dag,
+    task_id='retention_detail',
+    bash_command=retention_detail_template
+    )
+
+for reg in ['us', 'eu', 'ap']:
+    now = airflow_utils.RegionS3KeySensor(
+        dag = dag,
+        task_id='dw_activate_%s' % reg,
+        timeout=10*3600,
+        bucket_key = os.path.join(data_config.S3, data_config.DW_ACTIVATE, 'json/%s/{{ds_nodash}}/_SUCCESS'%reg)
+    )
+    now.set_downstream(retention_detail)
+
+    now = airflow_utils.RegionS3KeySensor(
+        dag = dag,
+        task_id='dw_active_%s' % reg,
+        timeout=10*3600,
+        bucket_key = os.path.join(data_config.S3, data_config.DW_LAUNCH_ACTIVE, 'json/%s/{{ds_nodash}}/_SUCCESS'%reg)
+    )
+    now.set_downstream(retention_detail)
+
+if __name__ == "__main__":
+    dag.cli()
