@@ -49,7 +49,7 @@ COPY requirements.txt .
 COPY requirements-dev.txt .
 
 RUN pip install --upgrade setuptools pip \
-    && pip install -r requirements.txt -r requirements-dev.txt  -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com --extra-index-url http://mirrors.aliyun.com/pypi/simple/ \
+    && pip install -r requirements.txt -r requirements-dev.txt  -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com --extra-index-url https://pypi.python.org/simple/ \
     && rm -rf /root/.cache/pip
 
 COPY --chown=superset:superset superset superset
